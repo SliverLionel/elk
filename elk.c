@@ -136,9 +136,9 @@ static const char *typestr(uint8_t t) {
 static jsval_t tov(double d) { union { double d; jsval_t v; } u = {d}; return u.v; }
 static double tod(jsval_t v) { union { jsval_t v; double d; } u = {v}; return u.d; }
 static jsval_t mkval(uint8_t type, uint64_t data) { return ((jsval_t) 0x7ff0U << 48U) | ((jsval_t) (type) << 48) | (data & 0xffffffffffffUL); }
-static bool is_nan(jsval_t v) { return (v >> 52U) == 0x7ffU; }
-static uint8_t vtype(jsval_t v) { return is_nan(v) ? ((v >> 48U) & 15U) : (uint8_t) T_NUM; }
-static size_t vdata(jsval_t v) { return (size_t) (v & ~((jsval_t) 0x7fffUL << 48U)); }
+static bool is_nan(jsval_t v) { return (v >> 52U) == 0x7ffU; } //判断是不是NaN类型
+static uint8_t vtype(jsval_t v) { return is_nan(v) ? ((v >> 48U) & 15U) : (uint8_t) T_NUM; } //判断是不是NaN,如果是，则右移48位获取NaN的详细信息，若不是则返回默认类型 T_NUM
+static size_t vdata(jsval_t v) { return (size_t) (v & ~((jsval_t) 0x7fffUL << 48U)); } //从 jsval_t 中提取数据，清除掉高16位的标志位
 static jsval_t mkcoderef(jsval_t off, jsoff_t len) { return mkval(T_CODEREF, (off & 0xffffffU) | ((jsval_t)(len & 0xffffffU) << 24U)); }
 static jsoff_t coderefoff(jsval_t v) { return v & 0xffffffU; }
 static jsoff_t codereflen(jsval_t v) { return (v >> 24U) & 0xffffffU; }
